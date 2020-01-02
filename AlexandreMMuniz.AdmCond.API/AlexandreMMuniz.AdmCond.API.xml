@@ -4,5 +4,57 @@
         <name>AlexandreMMuniz.AdmCond.API</name>
     </assembly>
     <members>
+        <member name="M:AlexandreMMuniz.AdmCond.API.Controllers.ComunicadosController.Post(AlexandreMMuniz.AdmCond.API.Models.Comunicado1Model)">
+            <summary>
+            Envia um comunicado de um morador para o síndico/zelador ou para a administradora.
+            </summary>
+            <remarks>
+            Envia um comunicado de um morador para o síndico do seu condomínio. Caso não haja síndico no condomínio, 
+            o mesmo será enviado ao zelador. Quando o assunto for administrativo, o comunicado será enviado 
+            para a administradora do condominio.
+            </remarks>
+            <param name="comunicado">Dados do comunicado.</param>
+            <returns></returns>
+            <response code="200">Comunicado enviado com sucesso.</response>
+            <response code="400">Não foi possível enviar o comunicado. Retorna a mensagem de erro.</response>
+        </member>
+        <member name="M:AlexandreMMuniz.AdmCond.API.Controllers.CondominiosController.Post(AlexandreMMuniz.AdmCond.API.Models.Condominio1Model)">
+            <summary>
+            Inclui um novo condomínio
+            </summary>
+            <remarks>Inclui um novo condomínio e retorna a chave de identificação do mesmo.</remarks>
+            <param name="condominio">Informações do condomínio.</param>
+            <returns></returns>
+            <response code="201">Condomínio incluído com sucesso. Retorna a chave de identificação do condomínio.</response>
+            <response code="400">Não foi possível incluir o condomínio. Retorna a mensagem de erro.</response>
+        </member>
+        <member name="M:AlexandreMMuniz.AdmCond.API.Controllers.UsuariosController.Post(AlexandreMMuniz.AdmCond.API.Models.Usuario1Model)">
+            <summary>
+            Inclui um novo usuário
+            </summary>
+            <remarks>Inclui um novo usuário e retorna a chave de identificação do mesmo.</remarks>
+            <param name="usuario">Informações do usuário.</param>
+            <returns></returns>
+            <response code="201">Usuário incluído com sucesso. Retorna a chave de identificação do usuário.</response>
+            <response code="400">Não foi possível incluir o usuário. Retorna a mensagem de erro.</response>
+        </member>
+        <member name="T:AlexandreMMuniz.AdmCond.API.Models.Comunicado1Model.ComunicadoAssuntoEnum">
+            <summary>
+            Tipo do assunto.
+            Legenda dos valores: 1 = Administrativo e 2 = Condominial.
+            </summary>
+        </member>
+        <member name="T:AlexandreMMuniz.AdmCond.API.Models.Condominio1Model.ResponsavelEnum">
+            <summary>
+            Tipo do usuário responsável pelo condomínio.
+            Legenda dos valores: 2 = Síndico e 4 = Zelador.
+            </summary>
+        </member>
+        <member name="T:AlexandreMMuniz.AdmCond.API.Models.Usuario1Model.TipoUsuarioEnum">
+            <summary>
+            Tipo do usuário.
+            Legenda dos valores: 1 = Morador; 2 = Síndico; 3 = Administradora e 4 = Zelador.
+            </summary>
+        </member>
     </members>
 </doc>

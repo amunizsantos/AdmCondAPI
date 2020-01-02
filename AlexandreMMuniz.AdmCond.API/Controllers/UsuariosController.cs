@@ -6,104 +6,65 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AlexandreMMuniz.AdmCond.API.Models.AlexandreMMunizAdmCondSQLDB;
+using AlexandreMMuniz.AdmCond.API.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AlexandreMMuniz.AdmCond.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public class UsuariosController : ControllerBase
     {
+        private readonly ILogger<CondominiosController> _logger;
         private readonly AlexandreMMunizAdmCondContext _context;
 
-        public UsuariosController(AlexandreMMunizAdmCondContext context)
+        public UsuariosController(ILogger<CondominiosController> logger, AlexandreMMunizAdmCondContext context)
         {
+            _logger = logger;
             _context = context;
         }
 
-        // GET: api/Usuarios
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuarios>>> GetUsuarios()
-        {
-            return await _context.Usuarios.ToListAsync();
-        }
-
-        // GET: api/Usuarios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Usuarios>> GetUsuarios(int id)
-        {
-            var usuarios = await _context.Usuarios.FindAsync(id);
-
-            if (usuarios == null)
-            {
-                return NotFound();
-            }
-
-            return usuarios;
-        }
-
-        // PUT: api/Usuarios/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuarios(int id, Usuarios usuarios)
-        {
-            if (id != usuarios.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(usuarios).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuariosExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Usuarios
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Inclui um novo usuário
+        /// </summary>
+        /// <remarks>Inclui um novo usuário e retorna a chave de identificação do mesmo.</remarks>
+        /// <param name="usuario">Informações do usuário.</param>
+        /// <returns></returns>
+        /// <response code="201">Usuário incluído com sucesso. Retorna a chave de identificação do usuário.</response>
+        /// <response code="400">Não foi possível incluir o usuário. Retorna a mensagem de erro.</response>
         [HttpPost]
-        public async Task<ActionResult<Usuarios>> PostUsuarios(Usuarios usuarios)
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<Usuario2Model>> Post(Usuario1Model usuario)
         {
-            _context.Usuarios.Add(usuarios);
-            await _context.SaveChangesAsync();
+            bool condominioExiste = await _context.Condominios
+                .AnyAsync(cond => cond.Id == usuario.IdCondominio).ConfigureAwait(false);
 
-            return CreatedAtAction("GetUsuarios", new { id = usuarios.Id }, usuarios);
-        }
-
-        // DELETE: api/Usuarios/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Usuarios>> DeleteUsuarios(int id)
-        {
-            var usuarios = await _context.Usuarios.FindAsync(id);
-            if (usuarios == null)
+            if (!condominioExiste)
             {
-                return NotFound();
+                ModelState.AddModelError("IdCondominio", $"O condomínio informado, {usuario.IdCondominio}, não existe.");
+
+                ValidationProblemDetails vp = new ValidationProblemDetails(ModelState);
+
+                return BadRequest(vp);
             }
 
-            _context.Usuarios.Remove(usuarios);
-            await _context.SaveChangesAsync();
+            Usuarios novoUsuario = new Usuarios();
 
-            return usuarios;
-        }
+            novoUsuario.Nome = usuario.Nome;
+            novoUsuario.Email = usuario.Email;
+            novoUsuario.IdCondominio = usuario.IdCondominio;
+            novoUsuario.TipoUsuario = (byte)usuario.TipoUsuario;
 
-        private bool UsuariosExists(int id)
-        {
-            return _context.Usuarios.Any(e => e.Id == id);
+            _context.Usuarios.Add(novoUsuario);
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            Usuario2Model key = new Usuario2Model() { Id = novoUsuario.Id };
+
+            return Created(string.Empty, key);
         }
     }
 }
