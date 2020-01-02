@@ -1,109 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using AlexandreMMuniz.AdmCond.API.Models;
+using AlexandreMMuniz.AdmCond.API.Models.AlexandreMMunizAdmCondSQLDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AlexandreMMuniz.AdmCond.API.Models.AlexandreMMunizAdmCondSQLDB;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace AlexandreMMuniz.AdmCond.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public class CondominiosController : ControllerBase
     {
+        private readonly ILogger<CondominiosController> _logger;
         private readonly AlexandreMMunizAdmCondContext _context;
 
-        public CondominiosController(AlexandreMMunizAdmCondContext context)
+        public CondominiosController(ILogger<CondominiosController> logger, AlexandreMMunizAdmCondContext context)
         {
+            _logger = logger;
             _context = context;
         }
 
-        // GET: api/Condominios
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Condominios>>> GetCondominios()
-        {
-            return await _context.Condominios.ToListAsync();
-        }
-
-        // GET: api/Condominios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Condominios>> GetCondominios(int id)
-        {
-            var condominios = await _context.Condominios.FindAsync(id);
-
-            if (condominios == null)
-            {
-                return NotFound();
-            }
-
-            return condominios;
-        }
-
-        // PUT: api/Condominios/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCondominios(int id, Condominios condominios)
-        {
-            if (id != condominios.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(condominios).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CondominiosExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Condominios
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Inclui um novo condomínio
+        /// </summary>
+        /// <remarks>Inclui um novo condomínio e retorna a chave de identificação do mesmo.</remarks>
+        /// <param name="condominio">Informações do condomínio.</param>
+        /// <returns></returns>
+        /// <response code="201">Condomínio incluído com sucesso. Retorna a chave de identificação do condomínio.</response>
+        /// <response code="400">Não foi possível incluir o condomínio. Retorna a mensagem de erro.</response>
         [HttpPost]
-        public async Task<ActionResult<Condominios>> PostCondominios(Condominios condominios)
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<Condominio2Model>> Post(Condominio1Model condominio)
         {
-            _context.Condominios.Add(condominios);
-            await _context.SaveChangesAsync();
+            bool administradoraExiste = await _context.Administradoras
+                .AnyAsync(adm => adm.Id == condominio.IdAdministradora).ConfigureAwait(false);
 
-            return CreatedAtAction("GetCondominios", new { id = condominios.Id }, condominios);
-        }
-
-        // DELETE: api/Condominios/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Condominios>> DeleteCondominios(int id)
-        {
-            var condominios = await _context.Condominios.FindAsync(id);
-            if (condominios == null)
+            if (!administradoraExiste)
             {
-                return NotFound();
+                ModelState.AddModelError("IdAdministradora", $"A administradora informada, {condominio.IdAdministradora}, não existe.");
+
+                ValidationProblemDetails vp = new ValidationProblemDetails(ModelState);
+
+                return BadRequest(vp);
             }
 
-            _context.Condominios.Remove(condominios);
-            await _context.SaveChangesAsync();
+            Condominios novoCondominio = new Condominios();
 
-            return condominios;
-        }
+            novoCondominio.Nome = condominio.Nome;
+            novoCondominio.IdAdministradora = condominio.IdAdministradora;
+            novoCondominio.Responsavel = (byte)condominio.Responsavel;
 
-        private bool CondominiosExists(int id)
-        {
-            return _context.Condominios.Any(e => e.Id == id);
-        }
+            _context.Condominios.Add(novoCondominio);
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            Condominio2Model key = new Condominio2Model() { Id = novoCondominio.Id };
+
+            return Created(string.Empty, key);
+        }        
     }
 }

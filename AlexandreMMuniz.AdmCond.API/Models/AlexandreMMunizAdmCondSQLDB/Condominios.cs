@@ -15,7 +15,7 @@ namespace AlexandreMMuniz.AdmCond.API.Models.AlexandreMMunizAdmCondSQLDB
         [Key]
         public int Id { get; set; }
         [Required]
-        [StringLength(10)]
+        [StringLength(100)]
         public string Nome { get; set; }
         public int IdAdministradora { get; set; }
         public byte Responsavel { get; set; }

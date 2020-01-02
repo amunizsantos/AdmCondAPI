@@ -16,7 +16,6 @@ namespace AlexandreMMuniz.AdmCond.API.Models.AlexandreMMunizAdmCondSQLDB
         }
 
         public virtual DbSet<Administradoras> Administradoras { get; set; }
-        public virtual DbSet<Assuntos> Assuntos { get; set; }
         public virtual DbSet<Condominios> Condominios { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }
 
@@ -31,15 +30,8 @@ namespace AlexandreMMuniz.AdmCond.API.Models.AlexandreMMunizAdmCondSQLDB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Assuntos>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            });
-
             modelBuilder.Entity<Condominios>(entity =>
             {
-                entity.Property(e => e.Nome).IsFixedLength();
-
                 entity.HasOne(d => d.IdAdministradoraNavigation)
                     .WithMany(p => p.Condominios)
                     .HasForeignKey(d => d.IdAdministradora)
