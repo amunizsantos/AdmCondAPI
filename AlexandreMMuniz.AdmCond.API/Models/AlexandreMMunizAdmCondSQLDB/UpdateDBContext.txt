@@ -1,5 +1,0 @@
-﻿Executar o comando abaixo no Package Manager Console:
-
-dotnet ef dbcontext scaffold "Data Source=DESKTOP-T28UCSE\SQLEXPRESS;Initial Catalog=AlexandreMMunizAdmCond;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -o Models/AlexandreMMunizAdmCondSQLDB -d -f
-
-Obs.: -d inclui Data Annotations nas classes de modelo. -f sobrescreve o contexto e as classes de modelo.
