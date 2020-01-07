@@ -1,7 +1,7 @@
 # AdmCondAPI
 API do sistema de administração condominial
 
-O seu propósito é fornecer funcionalidades a serem utilizadas pela interface do sistema, AdmCond, bem como, permitir a integração com outros sistemas. Esta API foi desenvolvida em ASP.Net Core 3.1 Web API e utiliza um banco de dados SQL Server. Os scripts para a criação do banco encontram-se no diretório SqlServerDBScript. A versão utilizada para a criação do mesmo foi Microsoft SQL Server 2017.
+O seu propósito é fornecer funcionalidades a serem utilizadas pela interface do sistema, AdmCond, bem como, permitir a integração com outros sistemas. Esta API foi desenvolvida em ASP.Net Core 3.1 Web API e utiliza um banco de dados SQL Server. Os scripts para a criação do banco encontram-se no diretório SqlServerDBScript. A versão utilizada para a criação do mesmo foi Microsoft SQL Server 2017. O comunicado criado pela aplicação pode ser visualizado no Visualizador de Eventos do Windows (Event Viewer), na pasta Logs do Windows/Aplicativos. Na lista de eventos exibida, procure os que tem a fonte (source) de nome .Net Runtime.
 
 Para executar a API, siga os passos abaixo:
 1) Baixe o projeto para o seu computador
