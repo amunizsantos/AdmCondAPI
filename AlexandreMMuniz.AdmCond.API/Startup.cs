@@ -27,11 +27,17 @@ namespace AlexandreMMuniz.AdmCond.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            EncryptionAES encryption = new EncryptionAES();
+
+            // Desabilite esta linha somente para criptografar uma string de conexão e obter o resultado em modo debug.
+            // Deverá estar sempre comentada em situação normal.
+            //string encryptedConString = encryption.Encrypt("Data Source=DESKTOP-T28UCSE\\SQLEXPRESS;Initial Catalog=AlexandreMMunizAdmCondProd;user=sa;pwd=1234");
+
             services.AddControllers();
 
             services.AddDbContext<AlexandreMMunizAdmCondContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("AlexandreMMunizAdmCondDatabase"));
+                options.UseSqlServer(encryption.Decrypt(Configuration.GetConnectionString("AlexandreMMunizAdmCondDatabase")));
             });
 
             // Register the Swagger generator, defining 1 or more Swagger documents

@@ -38,6 +38,13 @@
             <response code="201">Usuário incluído com sucesso. Retorna a chave de identificação do usuário.</response>
             <response code="400">Não foi possível incluir o usuário. Retorna a mensagem de erro.</response>
         </member>
+        <member name="M:AlexandreMMuniz.AdmCond.API.EncryptionAES.GenerateEncryptionKey">
+            -------------- Two Utility Methods (not used but may be useful) -----------
+            Generates an encryption key.
+        </member>
+        <member name="M:AlexandreMMuniz.AdmCond.API.EncryptionAES.GenerateEncryptionVector">
+            Generates a unique encryption vector
+        </member>
         <member name="T:AlexandreMMuniz.AdmCond.API.Models.Comunicado1Model.ComunicadoAssuntoEnum">
             <summary>
             Tipo do assunto.
