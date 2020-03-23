@@ -20,6 +20,8 @@ namespace AlexandreMMuniz.AdmCond.API.Controllers
         {
             _logger = logger;
             _context = context;
+
+            
         }
 
         /// <summary>

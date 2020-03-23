@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AlexandreMMuniz.AdmCond.API.Models;
+﻿using AlexandreMMuniz.AdmCond.API.Models;
 using AlexandreMMuniz.AdmCond.API.Models.AlexandreMMunizAdmCondSQLDB;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AlexandreMMuniz.AdmCond.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Consumes("application/json")]
+    [Consumes("application/json")] 
     [Produces("application/json")]
     public class ComunicadosController : ControllerBase
     {

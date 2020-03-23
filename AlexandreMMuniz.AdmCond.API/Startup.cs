@@ -19,14 +19,14 @@ namespace AlexandreMMuniz.AdmCond.API
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration;            
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {   
             EncryptionAES encryption = new EncryptionAES();
 
             // Desabilite esta linha somente para criptografar uma string de conexão e obter o resultado em modo debug.
@@ -101,6 +101,8 @@ namespace AlexandreMMuniz.AdmCond.API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<BasicAuthMiddleware>("AlexandreMMunizAmigos");
 
             app.UseEndpoints(endpoints =>
             {
